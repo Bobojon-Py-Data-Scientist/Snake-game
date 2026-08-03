@@ -1,369 +1,53 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
+
 <meta charset="UTF-8">
-<title>Snake Level Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+<title>Snake Deluxe</title>
 
-body{
-    background:#111;
-    color:white;
-    font-family:Arial;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-}
-
-canvas{
-    border:5px solid #00ff88;
-    background:#222;
-    border-radius:10px;
-}
-
-button{
-    margin:10px;
-    padding:10px 25px;
-    font-size:18px;
-    border:0;
-    border-radius:10px;
-    background:#00c853;
-    color:white;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#00ff88;
-}
-
-#levelText{
-    font-size:25px;
-    color:yellow;
-}
-
-</style>
+<link rel="stylesheet" href="style.css">
 
 </head>
 
 <body>
 
-<h1>🐍 Snake Game</h1>
+<div class="game-container">
 
-<div id="score">
-Ball: 0
+    <h1>🐍 Snake Deluxe</h1>
+
+    <div class="top-bar">
+
+        <span id="score">Score: 0</span>
+
+        <span id="highScore">High: 0</span>
+
+        <span id="level">Level 1</span>
+
+        <span id="portal">Portal: 10</span>
+
+    </div>
+
+    <canvas id="game" width="600" height="600"></canvas>
+
+    <div class="buttons">
+
+        <button id="pauseBtn">⏸ Pause</button>
+
+        <button id="restartBtn">🔄 Restart</button>
+
+    </div>
+
 </div>
 
-<div id="levelText">
-LEVEL 1
-</div>
-
-<button id="pauseBtn">
-⏸ Pause
-</button>
-
-<canvas id="game" width="400" height="400"></canvas>
-
-
-<script>
-
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
-
-
-let box=20;
-
-
-let snake=[
-{
-x:200,
-y:200
-}
-];
-
-
-let direction="RIGHT";
-
-
-let food={
-x:100,
-y:100
-};
-
-
-let score=0;
-let level=1;
-
-
-let paused=false;
-
-
-// 10 sekundlik devordan o'tish
-
-let wallMode=true;
-
-setTimeout(()=>{
-    wallMode=false;
-},10000);
-
-
-
-function randomFood(){
-
-food={
-x:Math.floor(Math.random()*20)*box,
-y:Math.floor(Math.random()*20)*box
-};
-
-}
-
-
-
-document.addEventListener("keydown",e=>{
-
-
-if(e.key=="ArrowLeft" && direction!="RIGHT")
-direction="LEFT";
-
-
-if(e.key=="ArrowRight" && direction!="LEFT")
-direction="RIGHT";
-
-
-if(e.key=="ArrowUp" && direction!="DOWN")
-direction="UP";
-
-
-if(e.key=="ArrowDown" && direction!="UP")
-direction="DOWN";
-
-
-});
-
-
-
-// pause
-
-pauseBtn.onclick=function(){
-
-paused=!paused;
-
-if(paused)
-pauseBtn.innerHTML="▶ Resume";
-
-else
-pauseBtn.innerHTML="⏸ Pause";
-
-
-}
-
-
-
-
-function draw(){
-
-
-if(paused)
-return;
-
-
-
-ctx.clearRect(0,0,400,400);
-
-
-
-// OLMA
-
-ctx.font="25px Arial";
-ctx.fillText("🍎",food.x,food.y+20);
-
-
-
-
-// ILON
-
-snake.forEach((part,index)=>{
-
-
-if(index==0){
-
-ctx.fillStyle="lime";
-
-}else{
-
-ctx.fillStyle="#00aa00";
-
-}
-
-
-ctx.beginPath();
-
-ctx.roundRect(
-part.x,
-part.y,
-box-2,
-box-2,
-8
-);
-
-ctx.fill();
-
-
-
-});
-
-
-
-// bosh
-
-ctx.fillStyle="black";
-
-ctx.beginPath();
-
-ctx.arc(
-snake[0].x+6,
-snake[0].y+6,
-2,
-0,
-Math.PI*2
-);
-
-ctx.fill();
-
-
-
-let headX=snake[0].x;
-let headY=snake[0].y;
-
-
-
-if(direction=="LEFT")
-headX-=box;
-
-
-if(direction=="RIGHT")
-headX+=box;
-
-
-if(direction=="UP")
-headY-=box;
-
-
-if(direction=="DOWN")
-headY+=box;
-
-
-
-
-// devordan o'tish
-
-if(wallMode){
-
-
-if(headX<0)
-headX=380;
-
-
-if(headX>=400)
-headX=0;
-
-
-if(headY<0)
-headY=380;
-
-
-if(headY>=400)
-headY=0;
-
-
-}else{
-
-
-if(
-headX<0||
-headY<0||
-headX>=400||
-headY>=400
-){
-
-gameOver();
-
-}
-
-
-}
-
-
-
-
-
-let newHead={
-x:headX,
-y:headY
-};
-
-
-
-// olma yeyish
-
-if(
-headX==food.x &&
-headY==food.y
-){
-
-score++;
-
-document.getElementById("score").innerHTML=
-"Ball: "+score;
-
-
-randomFood();
-
-
-
-if(score>=10){
-
-level=2;
-
-document.getElementById("levelText").innerHTML=
-"🔥 LEVEL 2 BOSHLANDI 🔥";
-
-}
-
-
-}else{
-
-snake.pop();
-
-}
-
-
-
-snake.unshift(newHead);
-
-
-
-}
-
-
-
-
-function gameOver(){
-
-alert(
-"O'yin tugadi 😢 Ball: "+score
-);
-
-location.reload();
-
-}
-
-
-
-let game=setInterval(draw,160);
-
-
-
-</script>
+<div id="message" class="hidden"></div>
+
+<script src="snake.js"></script>
+<script src="food.js"></script>
+<script src="levels.js"></script>
+<script src="ui.js"></script>
+<script src="game.js"></script>
 
 </body>
 </html>
